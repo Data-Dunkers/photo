@@ -12,6 +12,7 @@
     h1 { margin: 0 0 8px; font-size: clamp(28px, 6vw, 38px); letter-spacing: -.04em; }
     p { line-height: 1.6; }
     .intro { margin: 0 0 24px; color: #51665e; }
+    .capture-layout, .controls { min-width: 0; }
     .camera { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 16px; background: #15251f; }
     video, .camera img { display: block; width: 100%; height: 100%; object-fit: contain; }
     video { transform: scaleX(-1); }
@@ -30,30 +31,39 @@
     #status { min-height: 3.2em; margin: 18px 0 0; font-size: 14px; }
     #status.error { color: #a22222; }
     footer { border-top: 1px solid #e4eae5; padding-top: 16px; margin-top: 14px; font-size: 13px; color: #51665e; line-height: 1.6; }
+    @media (orientation: landscape) {
+      main { width: min(100%, 1100px); }
+      .capture-layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: clamp(16px, 3vw, 32px); align-items: start; }
+      .controls > label:first-child { margin-top: 0; }
+    }
   </style>
 </head>
 <body>
   <main>
     <h1>Take a selfie.</h1>
     <p class="intro">Get comfortable, add your initials, and capture a photo.</p>
-    <div class="camera">
-      <video id="preview" autoplay muted playsinline hidden aria-label="Live webcam preview"></video>
-      <img id="photo" alt="Your captured selfie" hidden>
-      <div id="placeholder" class="placeholder">Your camera preview will appear here.</div>
+    <div class="capture-layout">
+      <div class="camera">
+        <video id="preview" autoplay muted playsinline hidden aria-label="Live webcam preview"></video>
+        <img id="photo" alt="Your captured selfie" hidden>
+        <div id="placeholder" class="placeholder">Your camera preview will appear here.</div>
+      </div>
+      <div class="controls">
+        <label for="initials">Your initials</label>
+        <input id="initials" type="text" placeholder="e.g. AB" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="filename">
+        <label for="real-name">Real Name (optional)</label>
+        <input id="real-name" type="text" placeholder="e.g. Jane Doe" maxlength="80" autocomplete="off" autocapitalize="words" spellcheck="false" aria-describedby="filename">
+        <p id="filename" class="hint">Enter letters or numbers to name your photo.</p>
+        <div class="buttons">
+          <button id="start" type="button">Start camera</button>
+          <button id="capture" type="button" hidden disabled>Take photo</button>
+          <button id="retake" class="secondary" type="button" hidden>Retake</button>
+          <button id="save" type="button" hidden disabled>Save photo</button>
+          <button id="new-photo" class="secondary" type="button" hidden>New photo</button>
+        </div>
+        <p id="status" role="status" aria-live="polite">Start the camera and allow access when your browser asks.</p>
+      </div>
     </div>
-    <label for="initials">Your initials</label>
-    <input id="initials" type="text" placeholder="e.g. AB" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="filename">
-    <label for="real-name">Real Name (optional)</label>
-    <input id="real-name" type="text" placeholder="e.g. Jane Doe" maxlength="80" autocomplete="off" autocapitalize="words" spellcheck="false" aria-describedby="filename">
-    <p id="filename" class="hint">Enter letters or numbers to name your photo.</p>
-    <div class="buttons">
-      <button id="start" type="button">Start camera</button>
-      <button id="capture" type="button" hidden disabled>Take photo</button>
-      <button id="retake" class="secondary" type="button" hidden>Retake</button>
-      <button id="save" type="button" hidden disabled>Save photo</button>
-      <button id="new-photo" class="secondary" type="button" hidden>New photo</button>
-    </div>
-    <p id="status" role="status" aria-live="polite">Start the camera and allow access when your browser asks.</p>
     <footer>Your photo stays in this browser until you save it to your device. Nothing is uploaded. The saved photo matches the mirrored preview. The camera stays on for your next photo until you leave or close this page.</footer>
   </main>
   <script>
